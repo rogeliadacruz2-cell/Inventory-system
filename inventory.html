@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Manajemen Inventory</title>
+    
+    <!-- CSS LENGKAP -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #4a6ee5, #7c3aed);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .form-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .form-section h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+        
+        .btn-submit {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .stats-section {
+            margin-bottom: 40px;
+        }
+        
+        .stats-section h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+        
+        .stat-card h3 {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #7c3aed;
+            margin: 10px 0;
+        }
+        
+        .stat-card small {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-boxes"></i> Sistem Manajemen Inventory</h1>
+            <p>Kelola stok dan inventaris produk dengan mudah</p>
+        </header>
+        
+        <div class="content">
+            <!-- Form Section -->
+            <section class="form-section">
+                <h2><i class="fas fa-plus-circle"></i> Tambah Produk Baru</h2>
+                
+                <form id="itemForm">
+                    <div class="form-group">
+                        <label for="itemName"><i class="fas fa-tag"></i> Nama Produk</label>
+                        <input type="text" id="itemName" placeholder="Contoh: Laptop Lenovo" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="itemStock"><i class="fas fa-box"></i> Jumlah Stok</label>
+                        <input type="number" id="itemStock" placeholder="0" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="itemPrice"><i class="fas fa-money-bill-wave"></i> Harga per Unit (Rp)</label>
+                        <input type="number" id="itemPrice" placeholder="1000000" min="0" required>
+                    </div>
+                    
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-save"></i> Simpan Produk
+                    </button>
+                </form>
+            </section>
+            
+            <!-- Stats Section -->
+            <section class="stats-section">
+                <h2><i class="fas fa-chart-bar"></i> Statistik Inventory</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Produk</h3>
+                        <div class="value" id="totalItems">0</div>
+                        <small>Item dalam inventory</small>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <h3>Total Stok</h3>
+                        <div class="value" id="totalStock">0</div>
+                        <small>Unit tersedia</small>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <h3>Total Nilai</h3>
+                        <div class="value" id="totalValue">Rp 0</div>
+                        <small>Nilai inventory</small>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Info -->
+            <div style="text-align: center; padding: 20px; color: #666;">
+                <p><i class="fas fa-info-circle"></i> Data tersimpan secara otomatis di browser Anda</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('itemForm');
+            let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+            
+            // Update stats on load
+            updateStats();
+            
+            // Form submit
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('itemName').value.trim();
+                const stock = parseInt(document.getElementById('itemStock').value);
+                const price = parseInt(document.getElementById('itemPrice').value);
+                
+                // Validation
+                if (!name || isNaN(stock) || stock < 0 || isNaN(price) || price < 0) {
+                    alert('Harap isi semua field dengan benar!');
+                    return;
+                }
+                
+                // Add to inventory
+                inventory.push({
+                    id: Date.now(),
+                    name: name,
+                    stock: stock,
+                    price: price,
+                    date: new Date().toLocaleDateString('id-ID')
+                });
+                
+                // Save to localStorage
+                localStorage.setItem('inventory', JSON.stringify(inventory));
+                
+                // Update UI
+                updateStats();
+                
+                // Reset form
+                form.reset();
+                
+                // Success message
+                alert(`✅ "${name}" berhasil ditambahkan!`);
+            });
+            
+            function updateStats() {
+                // Total Items
+                document.getElementById('totalItems').textContent = inventory.length;
+                
+                // Total Stock
+                const totalStock = inventory.reduce((sum, item) => sum + item.stock, 0);
+                document.getElementById('totalStock').textContent = totalStock;
+                
+                // Total Value
+                const totalValue = inventory.reduce((sum, item) => sum + (item.stock * item.price), 0);
+                document.getElementById('totalValue').textContent = 'Rp ' + totalValue.toLocaleString('id-ID');
+            }
+        });
+    </script>
+</body>
+</html>

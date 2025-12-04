@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Manajemen Inventory</title>
+    
+    <!-- CSS LENGKAP INLINE -->
+    <style>
+        /* RESET & BASE */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        /* HEADER */
+        header {
+            background: linear-gradient(to right, #4a6ee5, #7c3aed);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        /* FORM SECTION */
+        .form-section {
+            padding: 40px;
+            background: #f8f9fa;
+            margin: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+        
+        .form-section h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #555;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-group input {
+            padding: 16px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .form-group input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        /* BUTTON */
+        .submit-btn {
+            grid-column: 1 / -1;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* STATS SECTION */
+        .stats-section {
+            padding: 40px;
+        }
+        
+        .stats-section h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            border-radius: 20px;
+            padding: 35px 30px;
+            text-align: center;
+            border: 2px solid #eef2ff;
+            transition: all 0.3s;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+        
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            color: white;
+            font-size: 1.8rem;
+        }
+        
+        .stat-card h3 {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .stat-card .value {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: #7c3aed;
+            margin: 10px 0;
+            line-height: 1;
+        }
+        
+        .stat-card small {
+            color: #888;
+            font-size: 0.95rem;
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .form-section, .stats-section {
+                margin: 15px;
+                padding: 25px;
+            }
+            
+            .form-grid, .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-card .value {
+                font-size: 2.2rem;
+            }
+        }
+        
+        /* ANIMATIONS */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-section, .stats-section {
+            animation: fadeIn 0.6s ease;
+        }
+    </style>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <h1>
+                <i class="fas fa-boxes"></i>
+                Sistem Manajemen Inventory
+            </h1>
+            <p>Kelola stok dan inventaris produk dengan mudah</p>
+        </header>
+        
+        <!-- FORM SECTION -->
+        <section class="form-section">
+            <h2>
+                <i class="fas fa-plus-circle"></i>
+                Tambah Produk Baru
+            </h2>
+            
+            <form id="itemForm" class="form-grid">
+                <div class="form-group">
+                    <label for="itemName">
+                        <i class="fas fa-tag"></i>
+                        Nama Produk
+                    </label>
+                    <input 
+                        type="text" 
+                        id="itemName" 
+                        placeholder="Contoh: Laptop Lenovo" 
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="itemStock">
+                        <i class="fas fa-box"></i>
+                        Jumlah Stok
+                    </label>
+                    <input 
+                        type="number" 
+                        id="itemStock" 
+                        placeholder="0" 
+                        min="0" 
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="itemPrice">
+                        <i class="fas fa-money-bill-wave"></i>
+                        Harga per Unit (Rp)
+                    </label>
+                    <input 
+                        type="number" 
+                        id="itemPrice" 
+                        placeholder="1000000" 
+                        min="0" 
+                        step="1000" 
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="itemDescription">
+                        <i class="fas fa-file-alt"></i>
+                        Deskripsi (Opsional)
+                    </label>
+                    <input 
+                        type="text" 
+                        id="itemDescription" 
+                        placeholder="Deskripsi produk..."
+                    >
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-save"></i>
+                    Simpan Produk
+                </button>
+            </form>
+        </section>
+        
+        <!-- STATS SECTION -->
+        <section class="stats-section">
+            <h2>
+                <i class="fas fa-chart-bar"></i>
+                Statistik Inventory
+            </h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <h3>Total Produk</h3>
+                    <div class="value" id="totalItems">0</div>
+                    <small>Item dalam inventory</small>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <h3>Total Stok</h3>
+                    <div class="value" id="totalStock">0</div>
+                    <small>Unit tersedia</small>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <h3>Total Nilai</h3>
+                    <div class="value" id="totalValue">Rp 0</div>
+                    <small>Nilai inventory</small>
+                </div>
+            </div>
+        </section>
+        
+        <!-- INFO SECTION -->
+        <div style="padding: 30px; text-align: center; background: #f8f9fa; margin: 30px; border-radius: 15px;">
+            <h3 style="color: #4a6ee5; margin-bottom: 15px;">
+                <i class="fas fa-info-circle"></i> Cara Menggunakan
+            </h3>
+            <p style="color: #666; max-width: 800px; margin: 0 auto; line-height: 1.6;">
+                1. Isi form di atas dengan data produk<br>
+                2. Klik "Simpan Produk" untuk menambahkan<br>
+                3. Data akan tersimpan secara otomatis<br>
+                4. Statistik akan diperbarui secara real-time
+            </p>
+        </div>
+    </div>
+    
+    <!-- JAVASCRIPT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize
+            let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+            updateStats();
+            
+            // Form submission
+            document.getElementById('itemForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const name = document.getElementById('itemName').value.trim();
+                const stock = parseInt(document.getElementById('itemStock').value);
+                const price = parseInt(document.getElementById('itemPrice').value);
+                const description = document.getElementById('itemDescription').value.trim();
+                
+                // Validation
+                if (!name || isNaN(stock) || stock < 0 || isNaN(price) || price < 0) {
+                    alert('❌ Harap isi semua field dengan benar!');
+                    return;
+                }
+                
+                // Create item object
+                const newItem = {
+                    id: Date.now(),
+                    name: name,
+                    stock: stock,
+                    price: price,
+                    description: description,
+                    dateAdded: new Date().toLocaleDateString('id-ID', {
+                        day: '2-digit',
+                        month: 'long',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    })
+                };
+                
+                // Add to inventory
+                inventory.push(newItem);
+                localStorage.setItem('inventory', JSON.stringify(inventory));
+                
+                // Update UI
+                updateStats();
+                
+                // Reset form
+                document.getElementById('itemForm').reset();
+                document.getElementById('itemName').focus();
+                
+                // Success message
+                alert(`✅ "${name}" berhasil ditambahkan!`);
+            });
+            
+            // Update statistics
+            function updateStats() {
+                // Total Items
+                document.getElementById('totalItems').textContent = inventory.length;
+                
+                // Total Stock
+                const totalStock = inventory.reduce((sum, item) => sum + item.stock, 0);
+                document.getElementById('totalStock').textContent = totalStock;
+                
+                // Total Value
+                const totalValue = inventory.reduce((sum, item) => sum + (item.stock * item.price), 0);
+                document.getElementById('totalValue').textContent = 'Rp ' + totalValue.toLocaleString('id-ID');
+            }
+            
+            // Check for existing data
+            if (inventory.length > 0) {
+                console.log(`📊 Loaded ${inventory.length} items from storage`);
+            }
+        });
+        
+        // Add smooth animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.stat-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+    </script>
+</body>
+</html>
